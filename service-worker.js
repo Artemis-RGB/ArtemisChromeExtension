@@ -29,8 +29,12 @@ function checkActiveTabAudible() {
 }
 
 chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
-  chrome.tabs.query({ audible: true }, async function (tabs) {
-    await sendUpdate({ AnyTabAudible: tabs.length > 0 });
+  chrome.tabs.query({}, async function (tabs) {
+    if (tabs.some((v) => v.audible)) {
+      await sendUpdate({ AnyTabAudible: true });
+    } else {
+      await sendUpdate({ AnyTabAudible: false });
+    }
   });
   checkActiveTabAudible();
 });
