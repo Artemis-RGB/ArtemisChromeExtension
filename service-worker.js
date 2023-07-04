@@ -19,26 +19,44 @@ chrome.runtime.onMessage.addListener(async function (
   await sendUpdate(request);
 });
 
-function checkActiveTabAudible() {
-  chrome.tabs.query(
-    { active: true, currentWindow: true, audible: true },
-    async function (tabs) {
-      await sendUpdate({ ActiveTabAudible: tabs.length > 0 });
-    }
-  );
+async function getTabsAndSendUpdate() {
+  chrome.tabs.query({}, async function (tabs) {
+    await sendUpdate({ tabs });
+  });
 }
 
 chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
-  chrome.tabs.query({}, async function (tabs) {
-    if (tabs.some((v) => v.audible)) {
-      await sendUpdate({ AnyTabAudible: true });
-    } else {
-      await sendUpdate({ AnyTabAudible: false });
-    }
-  });
-  checkActiveTabAudible();
+  await getTabsAndSendUpdate();
 });
 
-chrome.tabs.onActivated.addListener(function (activeInfo) {
-  checkActiveTabAudible();
+chrome.tabs.onActivated.addListener(async function (activeInfo) {
+  await getTabsAndSendUpdate();
 });
+
+chrome.tabs.onAttached.addListener(async function (tabId, attachInfo) {
+  await getTabsAndSendUpdate();
+});
+
+chrome.tabs.onCreated.addListener(async function (tab) {
+  await getTabsAndSendUpdate();
+});
+
+chrome.tabs.onDetached.addListener(async function (tab) {
+  await getTabsAndSendUpdate();
+});
+
+chrome.tabs.onMoved.addListener(async function (tabId, moveInfo) {
+  await getTabsAndSendUpdate();
+});
+
+chrome.tabs.onRemoved.addListener(async function (tabId, removeInfo) {
+  await getTabsAndSendUpdate();
+});
+
+chrome.tabs.onReplaced.addListener(async function (addedTabId, removedTabId) {
+  await getTabsAndSendUpdate();
+});
+
+(async () => {
+  await getTabsAndSendUpdate();
+})();
