@@ -1,5 +1,5 @@
 async function sendUpdate(data) {
-  const response = await fetch(
+  await fetch(
     `http://localhost:9696/plugins/eeb9ac67-4aff-4b05-b6db-f5eb47d89974/${data.type}`,
     {
       method: "POST",
@@ -9,10 +9,6 @@ async function sendUpdate(data) {
       body: JSON.stringify(data.body),
     }
   );
-
-  const result = await response.text();
-
-  console.log(result);
 }
 
 chrome.runtime.onMessage.addListener(async function (
