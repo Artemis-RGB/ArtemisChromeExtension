@@ -1,14 +1,18 @@
-async function sendUpdate(json) {
-  await fetch(
-    "http://localhost:9696/plugins/eeb9ac67-4aff-4b05-b6db-f5eb47d89974/update",
+async function sendUpdate(data) {
+  const response = await fetch(
+    `http://localhost:9696/plugins/eeb9ac67-4aff-4b05-b6db-f5eb47d89974/${data.type}`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(json),
+      body: JSON.stringify(data.body),
     }
   );
+
+  const result = await response.text();
+
+  console.log(result);
 }
 
 chrome.runtime.onMessage.addListener(async function (
@@ -19,44 +23,32 @@ chrome.runtime.onMessage.addListener(async function (
   await sendUpdate(request);
 });
 
-async function getTabsAndSendUpdate() {
-  chrome.tabs.query({}, async function (tabs) {
-    await sendUpdate({ tabs });
-  });
-}
-
 chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
-  await getTabsAndSendUpdate();
+  await sendUpdate({ type: "updatedTab", body: { tabId, changeInfo } });
 });
 
 chrome.tabs.onActivated.addListener(async function (activeInfo) {
-  await getTabsAndSendUpdate();
+  await sendUpdate({ type: "activatedTab", body: { tabId: activeInfo.tabId } });
 });
 
 chrome.tabs.onAttached.addListener(async function (tabId, attachInfo) {
-  await getTabsAndSendUpdate();
+  await sendUpdate({ type: "attachedTab", body: { tabId, attachInfo } });
 });
 
 chrome.tabs.onCreated.addListener(async function (tab) {
-  await getTabsAndSendUpdate();
-});
-
-chrome.tabs.onDetached.addListener(async function (tab) {
-  await getTabsAndSendUpdate();
+  await sendUpdate({ type: "newTab", body: tab });
 });
 
 chrome.tabs.onMoved.addListener(async function (tabId, moveInfo) {
-  await getTabsAndSendUpdate();
+  await sendUpdate({ type: "tabMoved", body: { tabId, moveInfo } });
 });
 
 chrome.tabs.onRemoved.addListener(async function (tabId, removeInfo) {
-  await getTabsAndSendUpdate();
+  await sendUpdate({ type: "closedTab", body: { tabId } });
 });
 
-chrome.tabs.onReplaced.addListener(async function (addedTabId, removedTabId) {
-  await getTabsAndSendUpdate();
+chrome.runtime.onStartup.addListener(async function () {
+  chrome.tabs.query({}, async function (tabs) {
+    await sendUpdate({ type: "raw", body: { tabs } });
+  });
 });
-
-(async () => {
-  await getTabsAndSendUpdate();
-})();
