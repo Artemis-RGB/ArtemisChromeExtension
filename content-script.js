@@ -7,3 +7,5 @@ function fullscreenCallback() {
 
 document.addEventListener("fullscreenchange", fullscreenCallback);
 document.addEventListener("webkitfullscreenchange", fullscreenCallback);
+
+console.log("[Artemis] Loaded!");
