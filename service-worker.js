@@ -42,9 +42,3 @@ chrome.tabs.onMoved.addListener(async function (tabId, moveInfo) {
 chrome.tabs.onRemoved.addListener(async function (tabId, removeInfo) {
   await sendUpdate({ type: "closedTab", body: { tabId } });
 });
-
-chrome.runtime.onStartup.addListener(async function () {
-  chrome.tabs.query({}, async function (tabs) {
-    await sendUpdate({ type: "raw", body: { tabs } });
-  });
-});
