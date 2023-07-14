@@ -1,8 +1,8 @@
 function fullscreenCallback() {
-  chrome.runtime.sendMessage(
-    "setFullscreen",
-    document.fullscreenElement !== null
-  );
+  chrome.runtime.sendMessage({
+    type: "setFullscreen",
+    body: document.fullscreenElement !== null,
+  });
 }
 
 document.addEventListener("fullscreenchange", fullscreenCallback);
