@@ -69,6 +69,9 @@ async function sendUpdate(endpoint, data) {
 }
 
 chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
+  if (request.includeTabId) {
+    request.body = { tabId: sender.tab.id, ...request.body };
+  }
   await sendUpdate(request.type, request.body);
 });
 
