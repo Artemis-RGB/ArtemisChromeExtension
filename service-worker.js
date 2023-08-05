@@ -68,14 +68,14 @@ async function sendUpdate(endpoint, data) {
   }
 }
 
-chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(async (request, sender) => {
   if (request.includeTabId) {
     request.body = { tabId: sender.tab.id, ...request.body };
   }
   await sendUpdate(request.type, request.body);
 });
 
-chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
   await sendUpdate("tabUpdated", { tabId, changeInfo });
 });
 
@@ -91,6 +91,6 @@ chrome.tabs.onMoved.addListener(async (tabId, moveInfo) => {
   await sendUpdate("tabMoved", { tabId, moveInfo });
 });
 
-chrome.tabs.onRemoved.addListener(async (tabId, removeInfo) => {
+chrome.tabs.onRemoved.addListener(async (tabId) => {
   await sendUpdate("tabClosed", { tabId });
 });

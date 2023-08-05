@@ -4,7 +4,7 @@ function waitForElm(selector) {
       return resolve(document.querySelector(selector));
     }
 
-    const observer = new MutationObserver((mutations) => {
+    const observer = new MutationObserver(() => {
       if (document.querySelector(selector)) {
         resolve(document.querySelector(selector));
         observer.disconnect();
@@ -25,8 +25,6 @@ async function sendYouTubeData() {
   await waitForElm(".ytd-watch-metadata");
 
   console.log("[Artemis] Metadata loaded!");
-
-  youTube = true;
 
   let data = {};
   // Check if it is music
@@ -81,7 +79,7 @@ async function checkForYouTube() {
 const observeUrlChange = () => {
   let oldHref = document.location.href;
   const body = document.querySelector("body");
-  const observer = new MutationObserver(async (mutations) => {
+  const observer = new MutationObserver(async () => {
     if (oldHref !== document.location.href) {
       oldHref = document.location.href;
       setTimeout(async () => {
