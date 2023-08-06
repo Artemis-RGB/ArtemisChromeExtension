@@ -1,0 +1,28 @@
+# Ignore node_modules directory (optional, if you are using Node.js)
+node_modules/
+
+# Ignore any built or compiled files
+*.zip
+*.crx
+*.pem
+
+# Ignore Chrome extension unpacked build directory
+/build/
+
+# Ignore any development or backup files
+*.log
+*.bak
+*.tmp
+
+# Ignore system and hidden files
+.DS_Store
+Thumbs.db
+
+# Ignore package manager lock files (optional, depending on your setup)
+yarn.lock
+package-lock.json
+
+# Ignore any personal or sensitive files (e.g., API keys, private data, etc.)
+# Replace filenames below with your specific sensitive files.
+# sensitive_file_1
+# sensitive_file_2
