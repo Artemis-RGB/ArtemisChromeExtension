@@ -20,5 +20,8 @@
       "js": ["content-script.js", "./websites/youtube.js"]
     }
   ],
-  "permissions": ["tabs"]
+  "permissions": ["tabs", "storage"],
+  "action": {
+    "default_popup": "popup.html"
+  }
 }

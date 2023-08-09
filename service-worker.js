@@ -18,10 +18,19 @@ class Mutex {
   }
 }
 
-const baseUrl =
-  "http://localhost:9696/plugins/eeb9ac67-4aff-4b05-b6db-f5eb47d89974";
+let settings = {
+  port: 9696,
+};
+let baseUrl;
 
 const mutex = new Mutex();
+
+function syncSettings() {
+  chrome.storage.sync.get(null, function (storedSettings) {
+    settings = storedSettings;
+  });
+  baseUrl = `http://localhost:${settings.port}/plugins/eeb9ac67-4aff-4b05-b6db-f5eb47d89974`;
+}
 
 async function sendInitialData() {
   let tabs = await chrome.tabs.query({});
@@ -68,11 +77,26 @@ async function sendUpdate(endpoint, data) {
   }
 }
 
-chrome.runtime.onMessage.addListener(async (request, sender) => {
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.type === "updateSettings") {
+    chrome.storage.sync.set(request.settings, function () {
+      syncSettings();
+      sendResponse({ status: "success" });
+    });
+    return true;
+  }
+
+  if (request.type === "getSettings") {
+    chrome.storage.sync.get(null, function (result) {
+      sendResponse(result);
+    });
+    return true;
+  }
+
   if (request.includeTabId) {
     request.body = { tabId: sender.tab.id, ...request.body };
   }
-  await sendUpdate(request.type, request.body);
+  sendUpdate(request.type, request.body);
 });
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
@@ -94,3 +118,5 @@ chrome.tabs.onMoved.addListener(async (tabId, moveInfo) => {
 chrome.tabs.onRemoved.addListener(async (tabId) => {
   await sendUpdate("tabClosed", { tabId });
 });
+
+syncSettings();
