@@ -1,0 +1,28 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-and-publish:
+    name: Build and publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Get ZIP file from release
+        id: get_zip
+        uses: robinraju/release-downloader@v1.8
+        with:
+          latest: true
+          zipBall: true
+      - name: Upload to Chrome Web Store
+        uses: mnao305/chrome-extension-upload@v4.0.1
+        with:
+          file-path: ${{ fromJson(steps.get_zip.outputs.downloaded_files)[0] }}
+          extension-id: igeafpfidcnjnbhldbacoaghgibgjmpg
+          client-id: ${{secrets.WEBSTORE_CLIENT_ID}}
+          client-secret: ${{secrets.WEBSTORE_CLIENT_SECRET}}
+          refresh-token: ${{secrets.WEBSTORE_REFRESH_TOKEN}}
+          publish: true
