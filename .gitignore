@@ -18,10 +18,6 @@ node_modules/
 .DS_Store
 Thumbs.db
 
-# Ignore package manager lock files (optional, depending on your setup)
-yarn.lock
-package-lock.json
-
 # Ignore any personal or sensitive files (e.g., API keys, private data, etc.)
 # Replace filenames below with your specific sensitive files.
 # sensitive_file_1
