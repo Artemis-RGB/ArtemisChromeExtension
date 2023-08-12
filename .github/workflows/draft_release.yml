@@ -35,12 +35,12 @@ jobs:
         run: echo "version=$(cat package.json | jq -r '.version')" >> "$GITHUB_OUTPUT"
 
       - name: Set Chrome extension version to new version
-        run: jq '.version = "${{steps.version.outputs.version}}"' manifest.json > tmpfile && mv tmpfile manifest.json
+        run: jq '.version = "${{steps.version.outputs.version}}"' src/manifest.json > tmpfile && mv tmpfile src/manifest.json
 
       - name: Commit changes
         uses: EndBug/add-and-commit@v7
         with:
-          add: "manifest.json package.json"
+          add: "src/manifest.json package.json"
           message: "Release ${{steps.version.outputs.version}}"
 
       - name: Create tag
