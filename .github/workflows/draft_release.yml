@@ -1,0 +1,57 @@
+name: Draft a release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "The version number (e.g. 1.2.3) OR one of: patch|minor|major|prepatch|preminor|premajor|prerelease"
+        required: true
+        default: "patch"
+
+jobs:
+  draft-release:
+    name: Draft a release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Bump version
+        run: npm version ${{github.event.inputs.version}}
+
+      - name: Install jq
+        run: sudo apt install jq
+
+      - name: Get version
+        id: version
+        run: echo "version=$(cat package.json | jq -r '.version')" >> "$GITHUB_OUTPUT"
+
+      - name: Set Chrome extension version to new version
+        run: jq '.version = "${{steps.version.outputs.version}}"' manifest.json > tmpfile && mv tmpfile manifest.json
+
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v7
+        with:
+          add: "manifest.json package.json"
+          message: "Release ${{steps.version.outputs.version}}"
+
+      - name: Create tag
+        run: |
+          git tag ${{steps.version.outputs.version}}
+          git push origin ${{steps.version.outputs.version}}
+
+      - name: Create ZIP file
+        run: zip -r ArtemisChromeExtension_${{steps.version.outputs.version}}.zip src/*
+
+      - name: Create a draft release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{steps.version.outputs.version}}
+          name: Release ${{steps.version.outputs.version}}
+          files: ArtemisChromeExtension_${{steps.version.outputs.version}}.zip
+          draft: true
