@@ -40,8 +40,10 @@ jobs:
       - name: Commit changes
         uses: EndBug/add-and-commit@v7
         with:
-          add: "src/manifest.json package.json"
+          add: "src/manifest.json" # package.json gets committed automatically by npm
           message: "Release ${{steps.version.outputs.version}}"
+          author_name: "GitHub Actions"
+          author_email: "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Create tag
         run: |
