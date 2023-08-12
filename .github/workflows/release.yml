@@ -11,12 +11,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
       - name: Get ZIP file from release
         id: get_zip
         uses: robinraju/release-downloader@v1.8
         with:
           latest: true
           zipBall: true
+
       - name: Upload to Chrome Web Store
         uses: mnao305/chrome-extension-upload@v4.0.1
         with:
