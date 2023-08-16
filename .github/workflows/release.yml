@@ -27,4 +27,4 @@ jobs:
           client-id: ${{secrets.WEBSTORE_CLIENT_ID}}
           client-secret: ${{secrets.WEBSTORE_CLIENT_SECRET}}
           refresh-token: ${{secrets.WEBSTORE_REFRESH_TOKEN}}
-          publish: true
+          publish: ${{fromJson('[true, "trustedTesters"]')[github.event.release.prerelease]}}

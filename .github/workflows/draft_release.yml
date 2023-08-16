@@ -60,3 +60,4 @@ jobs:
           name: Release ${{steps.version.outputs.version}}
           files: ArtemisChromeExtension_${{steps.version.outputs.version}}.zip
           draft: true
+          prerelease: ${{contains(fromJson('["prepatch", "preminor", "premajor", "prerelease"]'), github.event.inputs.version)}}
