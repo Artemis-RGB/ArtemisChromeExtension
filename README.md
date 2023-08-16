@@ -1,6 +1,7 @@
 <div align="center">
   <h1>Artemis Chrome Extension</h1>
 
+  [![Chrome Web Store Users](https://img.shields.io/chrome-web-store/users/igeafpfidcnjnbhldbacoaghgibgjmpg)](https://chrome.google.com/webstore/detail/artemis-rgb/igeafpfidcnjnbhldbacoaghgibgjmpg)
   [![GitHub stars](https://img.shields.io/github/stars/Artemis-RGB/Artemis.Plugins.Modules.Chrome.svg)](https://github.com/Artemis-RGB/Artemis.Plugins.Modules.Chrome/stargazers)
   [![Discord](https://img.shields.io/discord/392093058352676874?logo=discord&logoColor=white)](https://discord.gg/S3MVaC9)
 </div>
